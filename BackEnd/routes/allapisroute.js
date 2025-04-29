@@ -9,6 +9,7 @@ import {
   getFilteredPackages,
   getOnlineStatistics,
   getPackageInfo,
+  getProxyListFormats,
   getStatistics,
   getTrafficUsage,
   prolongatePackage,
@@ -39,6 +40,7 @@ router.post("/view-proxy-list/:packageKey", viewProxyList);
 router.get("/stats", getStatistics);
 router.get("/online-stats", getOnlineStatistics);
 router.get("/keys", getAllKeys);
-router.post("/generate-proxylist/:packageKey", generateProxyList);
+router.post("/generate-proxylist/:packagekey", generateProxyList);
+router.get("/proxylist-formats", getProxyListFormats);
 
 export default router;

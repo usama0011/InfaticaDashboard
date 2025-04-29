@@ -502,24 +502,25 @@ export const getAllKeys = async (req, res) => {
   }
 };
 
-// Controller 18: Generate Proxy List for a Package
 export const generateProxyList = async (req, res) => {
   try {
-    const { packageKey } = req.params;
+    const { packagekey } = req.params;
     const body = req.body;
-
-    if (!packageKey) {
-      return res
-        .status(400)
-        .json({ message: "Package key is required in URL params." });
+    console.log(body);
+    // ✅ REMOVE empty password if blank
+    if (
+      !body["proxy-list-password"] ||
+      body["proxy-list-password"].trim() === ""
+    ) {
+      delete body["proxy-list-password"];
     }
 
     const response = await axios.post(
-      `https://api.infatica.io/package/${packageKey}/generate`,
+      `https://api.infatica.io/package/${packagekey}/generate`,
       body,
       {
         headers: {
-          "api-key": "7cv9Bz2CZQvuWQL65OD6", // Replace with process.env.API_KEY if using .env
+          "api-key": "7cv9Bz2CZQvuWQL65OD6",
           "Content-Type": "application/json",
         },
       }
@@ -530,6 +531,28 @@ export const generateProxyList = async (req, res) => {
     console.error("Error generating proxy list:", error.message);
     res.status(500).json({
       message: "Failed to generate proxy list",
+      error: error.message,
+    });
+  }
+};
+
+export const getProxyListFormats = async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://dashboard.infatica.io/includes/api/reseller/formats",
+      {
+        headers: {
+          "api-key": "7cv9Bz2CZQvuWQL65OD6", // or replace with your API key directly
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Error fetching proxy list formats:", error.message);
+    res.status(500).json({
+      message: "Failed to fetch proxy list formats",
       error: error.message,
     });
   }

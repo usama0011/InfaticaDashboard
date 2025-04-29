@@ -39,6 +39,7 @@ import OnlineStats from "./pages/OnlineStats";
 import KeysList from "./pages/KeysList";
 import "./App.css";
 import GenereteProxyList from "./pages/GenereteProxyList";
+import FormatsList from "./pages/FormatsList";
 
 const cards = [
   {
@@ -149,6 +150,12 @@ const cards = [
     path: "/genereateproxylist",
     icon: <KeyOutlined />,
   },
+  {
+    title: "Proxy Format",
+    description: "View Proxylist Format.",
+    path: "/viewproxyformat",
+    icon: <KeyOutlined />,
+  },
 ];
 
 function App() {
@@ -196,6 +203,7 @@ function App() {
           <Route path="/online-stats" element={<OnlineStats />} />
           <Route path="/keys-list" element={<KeysList />} />
           <Route path="/genereateproxylist" element={<GenereteProxyList />} />
+          <Route path="/viewproxyformat" element={<FormatsList />} />
         </Routes>
       </div>
     </Router>

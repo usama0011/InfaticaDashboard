@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import axios from "../api";
-import { Form, Input, Button, Typography, Spin, message, Row, Col } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Spin,
+  message,
+  Row,
+  Col,
+  Select,
+} from "antd";
 
 const { Title } = Typography;
 
@@ -11,11 +21,18 @@ const GenereteProxyList = () => {
   const handleGenerate = async (values) => {
     try {
       setLoading(true);
-      const { packageKey, ...body } = values;
+      const { packagekey, ...body } = values;
+      if (
+        !body["proxy-list-password"] ||
+        body["proxy-list-password"].trim() === ""
+      ) {
+        delete body["proxy-list-password"];
+      }
       const response = await axios.post(
-        `/generate-proxy-list/${packageKey}`,
+        `/generate-proxylist/${packagekey}`,
         body
       );
+
       message.success("Proxy list generated successfully!");
       console.log("Proxy list response:", response.data);
       form.resetFields();
@@ -41,7 +58,7 @@ const GenereteProxyList = () => {
       >
         <Form.Item
           label="Package Key"
-          name="packageKey"
+          name="packagekey"
           rules={[{ required: true, message: "Package key is required" }]}
         >
           <Input placeholder="Enter package key" />
@@ -67,43 +84,6 @@ const GenereteProxyList = () => {
             </Form.Item>
           </Col>
         </Row>
-
-        <Form.Item label="Proxy List Password" name="proxy-list-password">
-          <Input />
-        </Form.Item>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Country (optional)" name="proxy-list-country">
-              <Input placeholder="e.g. US, DE, FR" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="City (optional)" name="proxy-list-city">
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Rotation Period (s)"
-              name="proxy-list-rotation-period"
-            >
-              <Input type="number" placeholder="3600" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Rotation Mode" name="proxy-list-rotation-mode">
-              <Input placeholder="0, 1, or 2" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item label="Format (optional)" name="proxy-list-format">
-          <Input />
-        </Form.Item>
 
         <Form.Item style={{ textAlign: "center" }}>
           <Button
