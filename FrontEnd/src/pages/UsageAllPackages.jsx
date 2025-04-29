@@ -29,19 +29,32 @@ const UsageAllPackages = () => {
   const columns = [
     {
       title: "Package Key",
-      dataIndex: "package",
-      key: "package",
+      dataIndex: "key",
+      key: "key",
     },
     {
-      title: "Total Traffic Used (bytes)",
-      dataIndex: "traffic_used",
-      key: "traffic_used",
-      render: (val) => val?.toLocaleString() || "N/A",
+      title: "Daily Usage (bytes)",
+      dataIndex: "daily",
+      key: "daily",
+      render: (val) => val?.toLocaleString() || "0",
     },
     {
-      title: "Period",
-      dataIndex: "period",
-      key: "period",
+      title: "Weekly Usage (bytes)",
+      dataIndex: "weekly",
+      key: "weekly",
+      render: (val) => val?.toLocaleString() || "0",
+    },
+    {
+      title: "Monthly Usage (bytes)",
+      dataIndex: "monhtly", // using the typo as provided
+      key: "monhtly",
+      render: (val) => (val === null ? "N/A" : val.toLocaleString()),
+    },
+    {
+      title: "Common Usage (bytes)",
+      dataIndex: "common",
+      key: "common",
+      render: (val) => val?.toLocaleString() || "0",
     },
   ];
 
@@ -59,7 +72,7 @@ const UsageAllPackages = () => {
         <Table
           dataSource={usageData}
           columns={columns}
-          rowKey="package"
+          rowKey="key"
           bordered
           pagination={{ pageSize: 8 }}
         />

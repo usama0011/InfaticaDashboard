@@ -21,7 +21,7 @@ export const getTrafficUsage = async (req, res) => {
       },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -58,7 +58,7 @@ export const createPackage = async (req, res) => {
       },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -67,6 +67,7 @@ export const createPackage = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error creating package:", error.message);
+    console.log(error.message);
     res
       .status(500)
       .json({ message: "Failed to create package", error: error.message });
@@ -100,7 +101,7 @@ export const updatePackage = async (req, res) => {
       },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -130,7 +131,7 @@ export const getPackageInfo = async (req, res) => {
       `https://api.infatica.io/package/${packageKey}`,
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -150,7 +151,7 @@ export const getAllPackages = async (req, res) => {
   try {
     const response = await axios.get("https://api.infatica.io/packages", {
       headers: {
-        "api-key": process.env.API_KEY,
+        "api-key": process.env.API_KEYY,
         "Content-Type": "application/json",
       },
     });
@@ -180,7 +181,7 @@ export const getFilteredPackages = async (req, res) => {
       { packages },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -213,7 +214,7 @@ export const prolongatePackage = async (req, res) => {
       { expired_at },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -244,7 +245,7 @@ export const suspendPackage = async (req, res) => {
       {},
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -287,7 +288,7 @@ export const resumePackage = async (req, res) => {
       },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -317,7 +318,7 @@ export const deactivatePackage = async (req, res) => {
       {},
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -337,7 +338,7 @@ export const usageForAllPackages = async (req, res) => {
   try {
     const response = await axios.get("https://api.infatica.io/usage", {
       headers: {
-        "api-key": process.env.API_KEY,
+        "api-key": process.env.API_KEYY,
         "Content-Type": "application/json",
       },
     });
@@ -367,7 +368,7 @@ export const usageForPackage = async (req, res) => {
       `https://api.infatica.io/package/${packageKey}/usage`,
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -398,7 +399,7 @@ export const getAllProxyLists = async (req, res) => {
       `https://api.infatica.io/package/${packageKey}/lists`,
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -429,7 +430,7 @@ export const viewProxyList = async (req, res) => {
       { id, name },
       {
         headers: {
-          "api-key": process.env.API_KEY,
+          "api-key": process.env.API_KEYY,
           "Content-Type": "application/json",
         },
       }
@@ -448,7 +449,7 @@ export const getStatistics = async (req, res) => {
   try {
     const response = await axios.get("https://api.infatica.io/stats", {
       headers: {
-        "api-key": process.env.API_KEY,
+        "api-key": process.env.API_KEYY,
         "Content-Type": "application/json",
       },
     });
@@ -466,7 +467,7 @@ export const getOnlineStatistics = async (req, res) => {
   try {
     const response = await axios.get("https://api.infatica.io/nodes-info", {
       headers: {
-        "api-key": process.env.API_KEY,
+        "api-key": process.env.API_KEYY,
         "Content-Type": "application/json",
       },
     });
@@ -485,7 +486,7 @@ export const getAllKeys = async (req, res) => {
   try {
     const response = await axios.get("https://api.infatica.io/keys", {
       headers: {
-        "api-key": process.env.API_KEY,
+        "api-key": process.env.API_KEYY,
         "Content-Type": "application/json",
       },
     });
@@ -493,6 +494,7 @@ export const getAllKeys = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error fetching all available keys:", error.message);
+    console.log(error.message);
     res.status(500).json({
       message: "Failed to fetch available keys",
       error: error.message,

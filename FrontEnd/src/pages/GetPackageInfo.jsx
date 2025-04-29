@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "../api";
-import { Input, Button, Card, Spin, message, Descriptions } from "antd";
+import { Input, Button, Card, Spin, message, Descriptions, Tag } from "antd";
 
 const GetPackageInfo = () => {
   const [packageKey, setPackageKey] = useState("");
@@ -16,7 +16,7 @@ const GetPackageInfo = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/get-package-info/${packageKey}`);
-      setPackageInfo(response.data);
+      setPackageInfo(response.data?.results || null);
       message.success("Package information fetched successfully!");
     } catch (error) {
       console.error(error);
@@ -59,13 +59,40 @@ const GetPackageInfo = () => {
       ) : packageInfo ? (
         <Card title="Package Details" bordered>
           <Descriptions column={1}>
-            {Object.entries(packageInfo).map(([key, value], idx) => (
-              <Descriptions.Item key={idx} label={key}>
-                {typeof value === "object"
-                  ? JSON.stringify(value)
-                  : value?.toString()}
-              </Descriptions.Item>
-            ))}
+            <Descriptions.Item label="Package Key">
+              {packageInfo.package_key}
+            </Descriptions.Item>
+            <Descriptions.Item label="Created At">
+              {new Date(packageInfo.created_at).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Expired At">
+              {packageInfo.expired_at ? packageInfo.expired_at : "Not Expired"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Status">
+              <Tag color={packageInfo.status === "Active" ? "green" : "red"}>
+                {packageInfo.status}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Suspended">
+              {packageInfo.is_suspended ? "Yes" : "No"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Active">
+              {packageInfo.is_active ? "Yes" : "No"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Proxy Count">
+              {packageInfo.proxy_count.toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Traffic Limits">
+              {JSON.stringify(packageInfo.traffic_limits)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Traffic Usage">
+              {JSON.stringify(packageInfo.traffic_usage)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Proxy Lists">
+              {packageInfo.lists.length === 0
+                ? "None"
+                : JSON.stringify(packageInfo.lists)}
+            </Descriptions.Item>
           </Descriptions>
         </Card>
       ) : (

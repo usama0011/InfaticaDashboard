@@ -12,7 +12,12 @@ const KeysList = () => {
     try {
       setLoading(true);
       const response = await axios.get("/keys");
-      setKeys(response.data?.results || []);
+      const rawKeys = response.data?.results || [];
+      const formattedKeys = rawKeys.map((key, index) => ({
+        key: index,
+        packageKey: key,
+      }));
+      setKeys(formattedKeys);
       message.success("Package keys fetched successfully!");
     } catch (error) {
       console.error(error);
@@ -29,19 +34,8 @@ const KeysList = () => {
   const columns = [
     {
       title: "Package Key",
-      dataIndex: "key",
-      key: "key",
-    },
-    {
-      title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (text) => text?.toUpperCase() || "N/A",
+      dataIndex: "packageKey",
+      key: "packageKey",
     },
   ];
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api";
-import { Table, Spin, message, Typography } from "antd";
+import { Table, Spin, message, Typography, Tag } from "antd";
 
 const { Title } = Typography;
 
@@ -29,30 +29,45 @@ const GetAllPackages = () => {
   const columns = [
     {
       title: "Package Key",
-      dataIndex: "key",
-      key: "key",
+      dataIndex: "package_key",
+      key: "package_key",
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      render: (val) => new Date(val).toLocaleString(),
     },
     {
-      title: "Expired At",
+      title: "Expired",
       dataIndex: "expired_at",
       key: "expired_at",
+      render: (val) => (val ? new Date(val).toLocaleString() : "Not Expired"),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (val) => (
+        <Tag color={val === "Active" ? "green" : "red"}>{val}</Tag>
+      ),
+    },
+    {
+      title: "Proxies",
+      dataIndex: "proxy_count",
+      key: "proxy_count",
     },
     {
       title: "Common Limit",
-      dataIndex: "limit_traffic_common",
+      dataIndex: ["traffic_limits", "common"],
       key: "limit_traffic_common",
-      render: (value) => value?.toLocaleString() || "N/A",
+      render: (val) => (val === false ? "Unlimited" : val.toLocaleString()),
     },
     {
       title: "Used Traffic",
-      dataIndex: "traffic_used",
+      dataIndex: ["traffic_usage", "common"],
       key: "traffic_used",
-      render: (value) => value?.toLocaleString() || "N/A",
+      render: (val) => val?.toLocaleString() || "0",
     },
   ];
 
@@ -70,7 +85,7 @@ const GetAllPackages = () => {
         <Table
           dataSource={packages}
           columns={columns}
-          rowKey="key"
+          rowKey="package_key"
           bordered
           pagination={{ pageSize: 8 }}
         />

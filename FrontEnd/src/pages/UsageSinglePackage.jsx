@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import axios from "../api";
-import { Input, Button, Table, Spin, Typography, message, Form } from "antd";
+import {
+  Input,
+  Button,
+  Spin,
+  Typography,
+  message,
+  Form,
+  Descriptions,
+  Card,
+} from "antd";
 
 const { Title } = Typography;
 
 const UsageSinglePackage = () => {
   const [loading, setLoading] = useState(false);
   const [packageKey, setPackageKey] = useState("");
-  const [usageData, setUsageData] = useState([]);
+  const [usageData, setUsageData] = useState(null);
 
   const handleFetch = async () => {
     if (!packageKey) {
@@ -18,7 +27,7 @@ const UsageSinglePackage = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/usage-package/${packageKey}`);
-      const usage = response.data?.results || [];
+      const usage = response.data?.results || null;
       setUsageData(usage);
       message.success("Usage data fetched!");
     } catch (error) {
@@ -28,20 +37,6 @@ const UsageSinglePackage = () => {
       setLoading(false);
     }
   };
-
-  const columns = [
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-    },
-    {
-      title: "Traffic Used (bytes)",
-      dataIndex: "value",
-      key: "value",
-      render: (val) => val?.toLocaleString() || "0",
-    },
-  ];
 
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto", paddingTop: "30px" }}>
@@ -74,14 +69,25 @@ const UsageSinglePackage = () => {
         <div style={{ textAlign: "center" }}>
           <Spin size="large" />
         </div>
-      ) : usageData.length > 0 ? (
-        <Table
-          dataSource={usageData}
-          columns={columns}
-          rowKey="time"
-          bordered
-          pagination={{ pageSize: 6 }}
-        />
+      ) : usageData ? (
+        <Card title={`Usage for Package: ${usageData.key}`} bordered>
+          <Descriptions column={1}>
+            <Descriptions.Item label="Daily">
+              {usageData.daily?.toLocaleString() || "0"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Weekly">
+              {usageData.weekly?.toLocaleString() || "0"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Monthly">
+              {usageData.monhtly !== null
+                ? usageData.monhtly?.toLocaleString()
+                : "N/A"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Common">
+              {usageData.common?.toLocaleString() || "0"}
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
       ) : (
         <p style={{ textAlign: "center", color: "#888" }}>No data available.</p>
       )}

@@ -6,7 +6,7 @@ body {
 }
 
 .App {
-  padding: 40px 20px;
+  padding: 40px 100px;
   text-align: center;
 }
 
@@ -27,9 +27,8 @@ body {
 }
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* updated to 4 cards per row */
+  grid-template-columns: repeat(5, 1fr); /* updated to 4 cards per row */
   gap: 30px;
-  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -41,7 +40,6 @@ body {
 .dashboard-card {
   position: relative;
   width: 100%;
-  padding: 30px 20px 100px 20px; /* extra padding bottom for wave */
   border-radius: 20px;
   background: #ffffff;
   box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
@@ -52,7 +50,7 @@ body {
   justify-content: flex-start;
   align-items: center;
   text-align: center;
-  height: 230px;
+  height: 160px;
 }
 
 .dashboard-card:hover {
@@ -83,7 +81,7 @@ body {
 
 /* Meta Title */
 .ant-card-meta-title {
-  font-size: 20px !important;
+  font-size: 18px !important;
   font-weight: 700;
   color: #003c8f;
   font-weight: bold;
@@ -92,14 +90,14 @@ body {
 
 /* Meta Description */
 .ant-card-meta-description {
-  font-size: 14px !important;
+  font-size: 12px !important;
   color: #666666;
   margin-top: 8px;
 }
 
 /* Icon size inside card */
 .dashboard-card .anticon {
-  font-size: 36px;
+  font-size: 28px;
   margin-bottom: 10px;
   color: #cb49b3; /* your pink color */
 }
