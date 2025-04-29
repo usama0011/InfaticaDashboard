@@ -14,7 +14,7 @@ const KeysList = () => {
       const response = await axios.get("/keys");
       const rawKeys = response.data?.results || [];
       const formattedKeys = rawKeys.map((key, index) => ({
-        key: index,
+        id: index,
         packageKey: key,
       }));
       setKeys(formattedKeys);
@@ -32,6 +32,12 @@ const KeysList = () => {
   }, []);
 
   const columns = [
+    {
+      title: "# No",
+      key: "index",
+      render: (text, record, index) => index,
+      width: 80,
+    },
     {
       title: "Package Key",
       dataIndex: "packageKey",
@@ -53,7 +59,7 @@ const KeysList = () => {
         <Table
           dataSource={keys}
           columns={columns}
-          rowKey="key"
+          rowKey="id"
           bordered
           pagination={{ pageSize: 10 }}
         />
