@@ -501,3 +501,36 @@ export const getAllKeys = async (req, res) => {
     });
   }
 };
+
+// Controller 18: Generate Proxy List for a Package
+export const generateProxyList = async (req, res) => {
+  try {
+    const { packageKey } = req.params;
+    const body = req.body;
+
+    if (!packageKey) {
+      return res
+        .status(400)
+        .json({ message: "Package key is required in URL params." });
+    }
+
+    const response = await axios.post(
+      `https://api.infatica.io/package/${packageKey}/generate`,
+      body,
+      {
+        headers: {
+          "api-key": "7cv9Bz2CZQvuWQL65OD6", // Replace with process.env.API_KEY if using .env
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Error generating proxy list:", error.message);
+    res.status(500).json({
+      message: "Failed to generate proxy list",
+      error: error.message,
+    });
+  }
+};

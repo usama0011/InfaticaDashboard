@@ -2,6 +2,7 @@ import express from "express";
 import {
   createPackage,
   deactivatePackage,
+  generateProxyList,
   getAllKeys,
   getAllPackages,
   getAllProxyLists,
@@ -38,5 +39,6 @@ router.post("/view-proxy-list/:packageKey", viewProxyList);
 router.get("/stats", getStatistics);
 router.get("/online-stats", getOnlineStatistics);
 router.get("/keys", getAllKeys);
+router.post("/generate-proxylist/:packageKey", generateProxyList);
 
 export default router;
