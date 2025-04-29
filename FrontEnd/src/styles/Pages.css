@@ -1,0 +1,28 @@
+/* src/styles/Pages.css */
+
+.page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.page-title {
+  text-align: center;
+  color: #003c8f;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.action-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.action-btn {
+  margin: 10px;
+  width: 180px;
+}

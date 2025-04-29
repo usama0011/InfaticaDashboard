@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: whitesmoke !important;
+  min-height: 100vh;
+}
+
+.App {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.dashboard-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #3a3939;
+  margin-bottom: 50px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.infoatdimage {
+  height: 80px;
+  margin-bottom: 20px;
+}
+.mainilkj {
+  margin-bottom: 20px;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* updated to 4 cards per row */
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-card-link {
+  width: 100%;
+  text-decoration: none;
+}
+
+.dashboard-card {
+  position: relative;
+  width: 100%;
+  padding: 30px 20px 100px 20px; /* extra padding bottom for wave */
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  height: 230px;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Pseudo background wave */
+.dashboard-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120%;
+  height: 40px;
+  background: linear-gradient(135deg, #36d1dc, #5b86e5, #a64bf4);
+  border-top-left-radius: 190px;
+  border-top-right-radius: 10px;
+  transform: rotate(-5deg) translateY(30px);
+  z-index: 0;
+}
+
+/* Bring the text above the wave */
+.dashboard-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Meta Title */
+.ant-card-meta-title {
+  font-size: 20px !important;
+  font-weight: 700;
+  color: #003c8f;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Meta Description */
+.ant-card-meta-description {
+  font-size: 14px !important;
+  color: #666666;
+  margin-top: 8px;
+}
+
+/* Icon size inside card */
+.dashboard-card .anticon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #cb49b3; /* your pink color */
+}
