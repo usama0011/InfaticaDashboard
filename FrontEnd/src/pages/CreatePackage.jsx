@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin } from "antd";
 
 const CreatePackage = () => {
@@ -29,7 +29,7 @@ const CreatePackage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/create-package", formData);
+      const response = await axios.post("/create-package", formData);
       message.success("Package created successfully!");
       console.log(response.data);
 

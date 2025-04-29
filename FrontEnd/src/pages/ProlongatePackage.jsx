@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin, Typography } from "antd";
 
 const { Title } = Typography;
@@ -29,12 +29,9 @@ const ProlongatePackage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        `/api/prolongate-package/${packageKey}`,
-        {
-          expired_at,
-        }
-      );
+      const response = await axios.post(`/prolongate-package/${packageKey}`, {
+        expired_at,
+      });
 
       message.success("Package expiration extended successfully!");
       console.log(response.data);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Table, Spin, message, Typography } from "antd";
 
 const { Title } = Typography;
@@ -19,7 +19,7 @@ const GetFilteredPackages = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/get-filtered-packages", {
+      const response = await axios.post("/get-filtered-packages", {
         packages: trimmedKeys,
       });
       setFilteredPackages(response.data?.results || []);

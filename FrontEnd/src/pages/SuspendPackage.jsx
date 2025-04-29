@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin, Typography } from "antd";
 
 const { Title } = Typography;
@@ -16,7 +16,7 @@ const SuspendPackage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`/api/suspend-package/${packageKey}`);
+      const response = await axios.post(`/suspend-package/${packageKey}`);
       message.success("Package suspended successfully!");
       console.log(response.data);
       setPackageKey("");

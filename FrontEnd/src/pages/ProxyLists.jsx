@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Table, Spin, Typography, message, Form } from "antd";
 
 const { Title } = Typography;
@@ -17,7 +17,7 @@ const ProxyLists = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`/api/proxy-lists/${packageKey}`);
+      const response = await axios.get(`/proxy-lists/${packageKey}`);
       setProxyLists(response.data?.results || []);
       message.success("Proxy lists fetched successfully!");
     } catch (error) {

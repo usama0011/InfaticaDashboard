@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Card, Spin, message, Descriptions } from "antd";
 
 const GetPackageInfo = () => {
@@ -15,7 +15,7 @@ const GetPackageInfo = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`/api/get-package-info/${packageKey}`);
+      const response = await axios.get(`/get-package-info/${packageKey}`);
       setPackageInfo(response.data);
       message.success("Package information fetched successfully!");
     } catch (error) {

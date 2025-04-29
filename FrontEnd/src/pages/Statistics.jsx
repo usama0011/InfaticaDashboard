@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Spin, Typography, Card, Row, Col, Descriptions, message } from "antd";
 
 const { Title } = Typography;
@@ -11,7 +11,7 @@ const Statistics = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/stats");
+      const response = await axios.get("/stats");
       setStats(response.data);
       message.success("Statistics loaded!");
     } catch (error) {

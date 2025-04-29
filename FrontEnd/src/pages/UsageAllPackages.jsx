@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Table, Spin, message, Typography } from "antd";
 
 const { Title } = Typography;
@@ -11,7 +11,7 @@ const UsageAllPackages = () => {
   const fetchUsageData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/usage-all");
+      const response = await axios.get("/usage-all");
       setUsageData(response.data?.results || []);
       message.success("Usage data fetched successfully!");
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin } from "antd";
 
 const UpdatePackage = () => {
@@ -31,7 +31,7 @@ const UpdatePackage = () => {
       setLoading(true);
       const { packageKey, ...limits } = formData;
       const response = await axios.post(
-        `/api/update-package/${packageKey}`,
+        `/update-package/${packageKey}`,
         limits
       );
 

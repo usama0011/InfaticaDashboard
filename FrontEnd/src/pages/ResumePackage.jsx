@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin, Typography } from "antd";
 
 const { Title } = Typography;
@@ -35,7 +35,7 @@ const ResumePackage = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `/api/resume-package/${packageKey}`,
+        `/resume-package/${packageKey}`,
         payload
       );
 

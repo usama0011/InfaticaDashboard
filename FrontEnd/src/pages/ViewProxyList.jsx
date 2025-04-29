@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin, Typography, Table } from "antd";
 
 const { Title } = Typography;
@@ -19,7 +19,7 @@ const ViewProxyList = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`/api/view-proxy-list/${packageKey}`, {
+      const response = await axios.post(`/view-proxy-list/${packageKey}`, {
         id,
         name,
       });

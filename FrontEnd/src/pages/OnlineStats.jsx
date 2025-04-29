@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Table, Spin, Typography, message } from "antd";
 
 const { Title } = Typography;
@@ -11,7 +11,7 @@ const OnlineStats = () => {
   const fetchOnlineStats = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/online-stats");
+      const response = await axios.get("/online-stats");
       setOnlineStats(response.data);
       message.success("Online statistics fetched successfully!");
     } catch (error) {

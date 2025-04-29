@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Form, message, Spin, Typography } from "antd";
 
 const { Title } = Typography;
@@ -16,9 +16,7 @@ const DeactivatePackage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        `/api/deactivate-package/${packageKey}`
-      );
+      const response = await axios.post(`/deactivate-package/${packageKey}`);
       message.success("Package deactivated successfully!");
       console.log(response.data);
       setPackageKey("");

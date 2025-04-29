@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Button, Input, Table, Spin, message } from "antd";
 
 const TrafficUsage = () => {
@@ -16,7 +16,7 @@ const TrafficUsage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/traffic-usage", {
+      const response = await axios.post("/traffic-usage", {
         key,
         period,
       });

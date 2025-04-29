@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Table, Spin, message, Typography } from "antd";
 
 const { Title } = Typography;
@@ -11,7 +11,7 @@ const GetAllPackages = () => {
   const fetchAllPackages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/get-all-packages");
+      const response = await axios.get("/get-all-packages");
       setPackages(response.data?.results || []);
       message.success("Packages fetched successfully!");
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Input, Button, Table, Spin, Typography, message, Form } from "antd";
 
 const { Title } = Typography;
@@ -17,7 +17,7 @@ const UsageSinglePackage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`/api/usage-package/${packageKey}`);
+      const response = await axios.get(`/usage-package/${packageKey}`);
       const usage = response.data?.results || [];
       setUsageData(usage);
       message.success("Usage data fetched!");
