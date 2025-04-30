@@ -18,7 +18,25 @@ const ProxyLists = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/proxy-lists/${packageKey}`);
-      setProxyLists(response.data?.results || []);
+      const rawLists = response.data?.results || [];
+
+      const formatted = rawLists.map((item, index) => ({
+        key: item.id,
+        id: item.id,
+        name: item.name,
+        login: item.login,
+        password: item.password || "N/A",
+        network: item.network || "N/A",
+        rotation: item.rotation,
+        rotation_mode: item.rotation_mode,
+        format: item.format,
+        country: item.geo?.[0]?.country || "-",
+        region: item.geo?.[0]?.region || "-",
+        city: item.geo?.[0]?.city || "-",
+        isp: item.geo?.[0]?.isp || "-",
+      }));
+
+      setProxyLists(formatted);
       message.success("Proxy lists fetched successfully!");
     } catch (error) {
       console.error(error);
@@ -29,30 +47,27 @@ const ProxyLists = () => {
   };
 
   const columns = [
+    { title: "#", render: (_, __, index) => index + 1 },
+    { title: "ID", dataIndex: "id", key: "id" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Login", dataIndex: "login", key: "login" },
+    { title: "Password", dataIndex: "password", key: "password" },
+    { title: "Network", dataIndex: "network", key: "network" },
+    { title: "Rotation (s)", dataIndex: "rotation", key: "rotation" },
     {
-      title: "List Key",
-      dataIndex: "key",
-      key: "key",
+      title: "Rotation Mode",
+      dataIndex: "rotation_mode",
+      key: "rotation_mode",
     },
-    {
-      title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
-    },
-    {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
-    },
-    {
-      title: "Count",
-      dataIndex: "count",
-      key: "count",
-    },
+    { title: "Format", dataIndex: "format", key: "format" },
+    { title: "Country", dataIndex: "country", key: "country" },
+    { title: "Region", dataIndex: "region", key: "region" },
+    { title: "City", dataIndex: "city", key: "city" },
+    { title: "ISP", dataIndex: "isp", key: "isp" },
   ];
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto", paddingTop: "30px" }}>
+    <div style={{ maxWidth: "1200px", margin: "0 auto", paddingTop: "30px" }}>
       <Title level={2} style={{ textAlign: "center", color: "#003c8f" }}>
         All Proxy Lists by Package
       </Title>
@@ -86,9 +101,10 @@ const ProxyLists = () => {
         <Table
           dataSource={proxyLists}
           columns={columns}
-          rowKey="key"
+          rowKey="id"
           bordered
           pagination={{ pageSize: 6 }}
+          scroll={{ x: "max-content" }}
         />
       ) : (
         <p style={{ textAlign: "center", color: "#888" }}>

@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Select,
+  Modal,
 } from "antd";
 
 const { Title } = Typography;
@@ -17,25 +18,37 @@ const { Title } = Typography;
 const GenereteProxyList = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
   const handleGenerate = async (values) => {
     try {
       setLoading(true);
-      const { packagekey, ...body } = values;
-      if (
-        !body["proxy-list-password"] ||
-        body["proxy-list-password"].trim() === ""
-      ) {
-        delete body["proxy-list-password"];
-      }
+      const { packagekey, ...fields } = values;
+
+      // ✅ Convert to FormData
+      const formData = new FormData();
+      Object.entries(fields).forEach(([key, val]) => {
+        if (val && val.trim() !== "") {
+          formData.append(key, val);
+        }
+      });
+
       const response = await axios.post(
         `/generate-proxylist/${packagekey}`,
-        body
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-
-      message.success("Proxy list generated successfully!");
-      console.log("Proxy list response:", response.data);
-      form.resetFields();
+      if (response.status === 200) {
+        setModalData(response.data); // store response data
+        setModalVisible(true); // show modal
+        message.success("Proxy list generated successfully!");
+        form.resetFields();
+      }
     } catch (error) {
       console.error(error);
       message.error("Failed to generate proxy list.");
@@ -84,6 +97,100 @@ const GenereteProxyList = () => {
             </Form.Item>
           </Col>
         </Row>
+        {/* Optional Fields */}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Proxy List Password" name="proxy-list-password">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Country" name="proxy-list-country">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Region" name="proxy-list-region">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="City" name="proxy-list-city">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="ISP" name="proxy-list-isp">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="ZIP Code" name="proxy-list-zip">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Rotation Period (seconds)"
+              name="proxy-list-rotation-period"
+            >
+              <Input type="number" placeholder="e.g. 3600" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Rotation Mode" name="proxy-list-rotation-mode">
+              <Select placeholder="Select a rotation mode">
+                <Select.Option value="0">0 - Instant</Select.Option>
+                <Select.Option value="1">1 - 5 seconds</Select.Option>
+                <Select.Option value="2">2 - No rotation</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Network" name="proxy-list-network">
+              <Input placeholder="IP, subnet, or list" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Proxy List Format" name="proxy-list-format">
+              <Select placeholder="Select a format">
+                <Select.Option value="1">
+                  login:password@host:port
+                </Select.Option>
+                <Select.Option value="2">
+                  host,port,login,password
+                </Select.Option>
+                <Select.Option value="3">
+                  http://login:password@host:port
+                </Select.Option>
+                <Select.Option value="4">
+                  socks5://login:password@host:port
+                </Select.Option>
+                <Select.Option value="5">
+                  login:password:host:port
+                </Select.Option>
+                <Select.Option value="6">
+                  host:port:login:password
+                </Select.Option>
+                <Select.Option value="7">
+                  login@password@host@port
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
         <Form.Item style={{ textAlign: "center" }}>
           <Button
@@ -96,6 +203,17 @@ const GenereteProxyList = () => {
           </Button>
         </Form.Item>
       </Form>
+      <Modal
+        title="✅ Proxy List Generated"
+        visible={modalVisible}
+        onOk={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        okText="Close"
+      >
+        <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+          {JSON.stringify(modalData, null, 2)}
+        </pre>
+      </Modal>
     </div>
   );
 };

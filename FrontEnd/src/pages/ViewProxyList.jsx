@@ -23,8 +23,22 @@ const ViewProxyList = () => {
         id,
         name,
       });
-      const proxies = response.data?.results || [];
-      setProxyData(proxies);
+
+      const proxies = response.data || [];
+
+      const parsedData = proxies.map((proxyStr, index) => {
+        const [auth, hostPort] = proxyStr.split("@");
+        const [ip, port] = hostPort?.split(":") || [];
+        return {
+          key: index,
+          proxy: proxyStr,
+          ip,
+          port,
+          type: "HTTP", // default or static, update if needed
+        };
+      });
+
+      setProxyData(parsedData);
       message.success("Proxy list fetched!");
     } catch (error) {
       console.error(error);
@@ -35,16 +49,6 @@ const ViewProxyList = () => {
   };
 
   const columns = [
-    {
-      title: "Proxy",
-      dataIndex: "proxy",
-      key: "proxy",
-    },
-    {
-      title: "Country",
-      dataIndex: "country",
-      key: "country",
-    },
     {
       title: "IP",
       dataIndex: "ip",
@@ -59,6 +63,11 @@ const ViewProxyList = () => {
       title: "Type",
       dataIndex: "type",
       key: "type",
+    },
+    {
+      title: "Proxy String",
+      dataIndex: "proxy",
+      key: "proxy",
     },
   ];
 
@@ -102,6 +111,31 @@ const ViewProxyList = () => {
           </Button>
         </div>
       </Form>
+      <br />
+      {loading ? (
+        <div style={{ textAlign: "center" }}>
+          <Spin size="large" />
+        </div>
+      ) : proxyData.length > 0 ? (
+        <>
+          <div style={{ marginBottom: "16px", textAlign: "center" }}>
+            <Title level={4} style={{ color: "#2e7d32" }}>
+              Total Proxies: {proxyData.length}
+            </Title>
+          </div>
+          <Table
+            dataSource={proxyData}
+            columns={columns}
+            bordered
+            pagination={{ pageSize: 50 }}
+            scroll={{ x: true }}
+          />
+        </>
+      ) : (
+        <p style={{ textAlign: "center", color: "#888" }}>
+          No proxy data loaded.
+        </p>
+      )}
 
       {loading ? (
         <div style={{ textAlign: "center" }}>
@@ -111,9 +145,8 @@ const ViewProxyList = () => {
         <Table
           dataSource={proxyData}
           columns={columns}
-          rowKey={(record, index) => index}
           bordered
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 50 }}
           scroll={{ x: true }}
         />
       ) : (

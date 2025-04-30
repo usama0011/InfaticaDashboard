@@ -18,6 +18,8 @@ import {
   LineChartOutlined,
   GlobalOutlined,
   KeyOutlined,
+  DeleteOutlined,
+  HeatMapOutlined,
 } from "@ant-design/icons"; // Ant Design Icons imported
 import OurMainLogo from "../src/assets/logo-black.svg";
 import TrafficUsage from "./pages/TrafficUsage";
@@ -40,6 +42,8 @@ import KeysList from "./pages/KeysList";
 import "./App.css";
 import GenereteProxyList from "./pages/GenereteProxyList";
 import FormatsList from "./pages/FormatsList";
+import DeleteProxyList from "./pages/DeleteProxyList";
+import ProxyCountries from "./pages/ProxyCountries";
 
 const cards = [
   {
@@ -132,12 +136,12 @@ const cards = [
     path: "/statistics",
     icon: <LineChartOutlined />,
   },
-  {
-    title: "Online Stats",
-    description: "Country-wise online residential proxies.",
-    path: "/online-stats",
-    icon: <GlobalOutlined />,
-  },
+  // {
+  //   title: "Online Stats",
+  //   description: "Country-wise online residential proxies.",
+  //   path: "/online-stats",
+  //   icon: <GlobalOutlined />,
+  // },
   {
     title: "Keys List",
     description: "List of all available package keys.",
@@ -156,6 +160,18 @@ const cards = [
     path: "/viewproxyformat",
     icon: <KeyOutlined />,
   },
+  {
+    title: "Delete Proxy List",
+    description: "View Proxylist Format.",
+    path: "/removeproxylist",
+    icon: <DeleteOutlined />,
+  },
+  // {
+  //   title: "Proxy Countries",
+  //   description: "List of Proxy Countries!.",
+  //   path: "/proxycountries",
+  //   icon: <HeatMapOutlined />,
+  // },
 ];
 
 function App() {
@@ -200,10 +216,12 @@ function App() {
           <Route path="/proxy-lists" element={<ProxyLists />} />
           <Route path="/view-proxy-list" element={<ViewProxyList />} />
           <Route path="/statistics" element={<Statistics />} />
-          <Route path="/online-stats" element={<OnlineStats />} />
+          {/* <Route path="/online-stats" element={<OnlineStats />} /> */}
           <Route path="/keys-list" element={<KeysList />} />
           <Route path="/genereateproxylist" element={<GenereteProxyList />} />
           <Route path="/viewproxyformat" element={<FormatsList />} />
+          <Route path="/removeproxylist" element={<DeleteProxyList />} />
+          {/* <Route path="/proxycountries" element={<ProxyCountries />} /> */}
         </Routes>
       </div>
     </Router>

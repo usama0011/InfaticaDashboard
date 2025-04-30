@@ -1,11 +1,12 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import FormData from "form-data";
 
 dotenv.config();
 
 export const getTrafficUsage = async (req, res) => {
   try {
-    const { key, period } = req.body;
+    const { key, period } = req.fields; // ✅ Use fields instead of body for FormData
 
     if (!key || !period) {
       return res
@@ -15,14 +16,10 @@ export const getTrafficUsage = async (req, res) => {
 
     const response = await axios.post(
       "https://api.infatica.io/traffic-details",
-      {
-        key,
-        period,
-      },
+      { key, period },
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
-          "Content-Type": "application/json",
         },
       }
     );
@@ -30,9 +27,10 @@ export const getTrafficUsage = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error fetching traffic usage:", error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch traffic usage", error: error.message });
+    res.status(500).json({
+      message: "Failed to fetch traffic usage",
+      error: error.message,
+    });
   }
 };
 
@@ -413,25 +411,29 @@ export const getAllProxyLists = async (req, res) => {
       .json({ message: "Failed to fetch proxy lists", error: error.message });
   }
 };
-// Controller 14: Show All Proxies in Proxy List for a Package
 export const viewProxyList = async (req, res) => {
   try {
     const { packageKey } = req.params;
-    const { id, name } = req.body;
+    const fields = req.body;
 
-    if (!packageKey || !id || !name) {
+    if (!packageKey || !fields?.id || !fields?.name) {
       return res
         .status(400)
         .json({ message: "Package key, id, and name are required." });
     }
 
+    // 🔧 Build form-data payload
+    const formData = new FormData();
+    formData.append("id", fields.id);
+    formData.append("name", fields.name);
+
     const response = await axios.post(
       `https://api.infatica.io/package/${packageKey}/viewlist`,
-      { id, name },
+      formData,
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
-          "Content-Type": "application/json",
+          ...formData.getHeaders(), // required for multipart/form-data
         },
       }
     );
@@ -439,9 +441,10 @@ export const viewProxyList = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error viewing proxy list:", error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to view proxy list", error: error.message });
+    res.status(500).json({
+      message: "Failed to view proxy list",
+      error: error.message,
+    });
   }
 };
 // Controller 15: Get Statistics
@@ -505,23 +508,23 @@ export const getAllKeys = async (req, res) => {
 export const generateProxyList = async (req, res) => {
   try {
     const { packagekey } = req.params;
-    const body = req.body;
-    console.log(body);
-    // ✅ REMOVE empty password if blank
-    if (
-      !body["proxy-list-password"] ||
-      body["proxy-list-password"].trim() === ""
-    ) {
-      delete body["proxy-list-password"];
-    }
+    const fields = req.body;
+    console.log(fields); // should now print a proper object
+
+    const formData = new FormData();
+    Object.entries(fields).forEach(([key, val]) => {
+      if (val && val.trim() !== "") {
+        formData.append(key, val);
+      }
+    });
 
     const response = await axios.post(
       `https://api.infatica.io/package/${packagekey}/generate`,
-      body,
+      formData,
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
-          "Content-Type": "application/json",
+          ...formData.getHeaders(),
         },
       }
     );
@@ -538,21 +541,72 @@ export const generateProxyList = async (req, res) => {
 
 export const getProxyListFormats = async (req, res) => {
   try {
-    const response = await axios.get(
-      "https://dashboard.infatica.io/includes/api/reseller/formats",
-      {
-        headers: {
-          "api-key": "7cv9Bz2CZQvuWQL65OD6", // or replace with your API key directly
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.get("https://api.infatica.io/formats", {
+      headers: {
+        "api-key": "7cv9Bz2CZQvuWQL65OD6", // or replace with your API key directly
+        "Content-Type": "application/json",
+      },
+    });
 
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error fetching proxy list formats:", error.message);
     res.status(500).json({
       message: "Failed to fetch proxy list formats",
+      error: error.message,
+    });
+  }
+};
+
+export const removeProxyList = async (req, res) => {
+  try {
+    const { packageKey } = req.params;
+    const { id, name } = req.fields; // <-- use fields instead of body
+
+    if (!packageKey || !id || !name) {
+      return res.status(400).json({
+        message: "Package key, id, and name are required.",
+      });
+    }
+
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("name", name);
+
+    const response = await axios.post(
+      `https://api.infatica.io/package/${packageKey}/removelist`,
+      formData,
+      {
+        headers: {
+          "api-key": "7cv9Bz2CZQvuWQL65OD6",
+          ...formData.getHeaders(),
+        },
+      }
+    );
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Error removing proxy list:", error.message);
+    res.status(500).json({
+      message: "Failed to remove proxy list",
+      error: error.message,
+    });
+  }
+};
+// Controller 20: Get Available Countries for Proxylist
+export const getProxyCountries = async (req, res) => {
+  try {
+    const response = await axios.get("https://api.infatica.io/countries", {
+      headers: {
+        "api-key": "7cv9Bz2CZQvuWQL65OD6", // Replace with env var in production
+      },
+    });
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Error fetching countries:", error.message);
+    res.status(500).json({
+      message: "Failed to fetch countries",
       error: error.message,
     });
   }
