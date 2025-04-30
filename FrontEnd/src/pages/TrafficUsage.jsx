@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import axios from "../api";
 import { Button, Input, Table, Spin, message, Select, Typography } from "antd";
+import { CloudOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const TrafficUsage = () => {
-  const [key, setKey] = useState(""); // Package Key
+  const [key, setKey] = useState("");
   const [period, setPeriod] = useState("daily");
   const [loading, setLoading] = useState(false);
-  const [usageData, setUsageData] = useState(null);
+  const [usageData, setUsageData] = useState([]);
 
   const fetchTrafficUsage = async () => {
     if (!key || !period) {
@@ -30,7 +31,21 @@ const TrafficUsage = () => {
         },
       });
 
-      setUsageData(response.data);
+      const parsed = [];
+
+      // Flattening the nested response structure
+      Object.entries(response.data || {}).forEach(([region, usage]) => {
+        Object.entries(usage).forEach(([time, value]) => {
+          parsed.push({
+            key: `${region}-${time}`,
+            region,
+            time,
+            usage: value,
+          });
+        });
+      });
+
+      setUsageData(parsed);
       message.success("Traffic usage data fetched successfully!");
     } catch (error) {
       console.error(error);
@@ -40,30 +55,28 @@ const TrafficUsage = () => {
     }
   };
 
-  const tableData = usageData
-    ? Object.entries(usageData).map(([time, value], index) => ({
-        key: index,
-        time,
-        usage: value,
-      }))
-    : [];
-
   const columns = [
     {
-      title: "Time",
+      title: "📍 Region",
+      dataIndex: "region",
+      key: "region",
+    },
+    {
+      title: "🕒 Time",
       dataIndex: "time",
       key: "time",
     },
     {
-      title: "Usage (Bytes)",
+      title: "📶 Usage (Bytes)",
       dataIndex: "usage",
       key: "usage",
     },
   ];
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
       <Title level={3} style={{ color: "#003c8f", marginBottom: "20px" }}>
+        <CloudOutlined style={{ color: "#1890ff", marginRight: 8 }} />
         Traffic Usage of Package
       </Title>
 
@@ -90,17 +103,21 @@ const TrafficUsage = () => {
         type="primary"
         onClick={fetchTrafficUsage}
         loading={loading}
-        style={{ backgroundColor: "#003c8f", width: "100%" }}
+        style={{
+          backgroundColor: "#003c8f",
+          width: "100%",
+          marginBottom: "20px",
+        }}
       >
         {loading ? <Spin /> : "Fetch Traffic Usage"}
       </Button>
 
-      <div style={{ marginTop: "30px" }}>
+      <div>
         {loading ? (
           <Spin size="large" />
-        ) : usageData ? (
+        ) : usageData.length > 0 ? (
           <Table
-            dataSource={tableData}
+            dataSource={usageData}
             columns={columns}
             pagination={{ pageSize: 10 }}
             bordered

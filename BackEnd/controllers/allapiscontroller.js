@@ -6,20 +6,26 @@ dotenv.config();
 
 export const getTrafficUsage = async (req, res) => {
   try {
-    const { key, period } = req.fields; // ✅ Use fields instead of body for FormData
+    const { key, period } = req.fields;
 
     if (!key || !period) {
-      return res
-        .status(400)
-        .json({ message: "Package key and period are required." });
+      return res.status(400).json({
+        message: "Package key and period are required.",
+      });
     }
+
+    // ✅ Send data as FormData (not JSON)
+    const formData = new FormData();
+    formData.append("key", key);
+    formData.append("period", period);
 
     const response = await axios.post(
       "https://api.infatica.io/traffic-details",
-      { key, period },
+      formData,
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
+          ...formData.getHeaders(), // ✅ Required to set proper multipart boundaries
         },
       }
     );
