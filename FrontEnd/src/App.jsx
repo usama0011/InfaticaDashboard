@@ -29,21 +29,16 @@ import GetPackageInfo from "./pages/GetPackageInfo";
 import GetAllPackages from "./pages/GetAllPackages";
 import GetFilteredPackages from "./pages/GetFilteredPackages";
 import ProlongatePackage from "./pages/ProlongatePackage";
-import SuspendPackage from "./pages/SuspendPackage";
-import ResumePackage from "./pages/ResumePackage";
 import DeactivatePackage from "./pages/DeactivatePackage";
 import UsageAllPackages from "./pages/UsageAllPackages";
 import UsageSinglePackage from "./pages/UsageSinglePackage";
 import ProxyLists from "./pages/ProxyLists";
 import ViewProxyList from "./pages/ViewProxyList";
 import Statistics from "./pages/Statistics";
-import OnlineStats from "./pages/OnlineStats";
 import KeysList from "./pages/KeysList";
 import "./App.css";
 import GenereteProxyList from "./pages/GenereteProxyList";
-import FormatsList from "./pages/FormatsList";
 import DeleteProxyList from "./pages/DeleteProxyList";
-import ProxyCountries from "./pages/ProxyCountries";
 
 const cards = [
   {
@@ -87,18 +82,6 @@ const cards = [
     description: "Extend a package's expiry date.",
     path: "/prolongate-package",
     icon: <ClockCircleOutlined />,
-  },
-  {
-    title: "Suspend Package",
-    description: "Temporarily suspend a package.",
-    path: "/suspend-package",
-    icon: <PauseCircleOutlined />,
-  },
-  {
-    title: "Resume Package",
-    description: "Resume a suspended package.",
-    path: "/resume-package",
-    icon: <PlayCircleOutlined />,
   },
   {
     title: "Deactivate Package",
@@ -154,12 +137,7 @@ const cards = [
     path: "/genereateproxylist",
     icon: <KeyOutlined />,
   },
-  {
-    title: "Proxy Format",
-    description: "View Proxylist Format.",
-    path: "/viewproxyformat",
-    icon: <KeyOutlined />,
-  },
+
   {
     title: "Delete Proxy List",
     description: "View Proxylist Format.",
@@ -205,8 +183,7 @@ function App() {
           <Route path="/all-packages" element={<GetAllPackages />} />
           <Route path="/filtered-packages" element={<GetFilteredPackages />} />
           <Route path="/prolongate-package" element={<ProlongatePackage />} />
-          <Route path="/suspend-package" element={<SuspendPackage />} />
-          <Route path="/resume-package" element={<ResumePackage />} />
+
           <Route path="/deactivate-package" element={<DeactivatePackage />} />
           <Route path="/usage-all-packages" element={<UsageAllPackages />} />
           <Route
@@ -219,7 +196,7 @@ function App() {
           {/* <Route path="/online-stats" element={<OnlineStats />} /> */}
           <Route path="/keys-list" element={<KeysList />} />
           <Route path="/genereateproxylist" element={<GenereteProxyList />} />
-          <Route path="/viewproxyformat" element={<FormatsList />} />
+
           <Route path="/removeproxylist" element={<DeleteProxyList />} />
           {/* <Route path="/proxycountries" element={<ProxyCountries />} /> */}
         </Routes>
