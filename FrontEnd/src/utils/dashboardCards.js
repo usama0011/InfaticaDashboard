@@ -1,0 +1,117 @@
+// utils/dashboardCards.js
+import {
+  CloudOutlined,
+  PlusSquareOutlined,
+  EditOutlined,
+  InfoCircleOutlined,
+  AppstoreOutlined,
+  FilterOutlined,
+  ClockCircleOutlined,
+  StopOutlined,
+  BarChartOutlined,
+  PieChartOutlined,
+  DeploymentUnitOutlined,
+  EyeOutlined,
+  LineChartOutlined,
+  KeyOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
+
+export const cards = [
+  {
+    title: "Traffic Usage",
+    description: "Get detailed traffic consumption.",
+    path: "traffic-usage",
+    icon: <CloudOutlined />,
+  },
+  {
+    title: "Create Package",
+    description: "Create a new proxy package.",
+    path: "create-package",
+    icon: <PlusSquareOutlined />,
+  },
+  {
+    title: "Update Package",
+    description: "Update an existing package.",
+    path: "update-package",
+    icon: <EditOutlined />,
+  },
+  {
+    title: "Get Package Info",
+    description: "Retrieve details of a specific package.",
+    path: "get-package-info",
+    icon: <InfoCircleOutlined />,
+  },
+  {
+    title: "All Packages",
+    description: "View all packages.",
+    path: "all-packages",
+    icon: <AppstoreOutlined />,
+  },
+  {
+    title: "Filtered Packages",
+    description: "Filter and view specific packages.",
+    path: "filtered-packages",
+    icon: <FilterOutlined />,
+  },
+  {
+    title: "Prolongate Package",
+    description: "Extend a package's expiry date.",
+    path: "prolongate-package",
+    icon: <ClockCircleOutlined />,
+  },
+  {
+    title: "Deactivate Package",
+    description: "Permanently deactivate a package.",
+    path: "deactivate-package",
+    icon: <StopOutlined />,
+  },
+  {
+    title: "Usage All Packages",
+    description: "View overall usage.",
+    path: "usage-all-packages",
+    icon: <BarChartOutlined />,
+  },
+  {
+    title: "Usage Single Package",
+    description: "View usage of one package.",
+    path: "usage-single-package",
+    icon: <PieChartOutlined />,
+  },
+  {
+    title: "Proxy Lists",
+    description: "View proxy lists of a package.",
+    path: "proxy-lists",
+    icon: <DeploymentUnitOutlined />,
+  },
+  {
+    title: "View Proxy List",
+    description: "View details of a proxy list.",
+    path: "view-proxy-list",
+    icon: <EyeOutlined />,
+  },
+  {
+    title: "Statistics",
+    description: "Overall account traffic stats.",
+    path: "statistics",
+    icon: <LineChartOutlined />,
+  },
+  {
+    title: "Keys List",
+    description: "List of all available package keys.",
+    path: "keys-list",
+    icon: <KeyOutlined />,
+  },
+  {
+    title: "Generate Proxy List",
+    description: "Generate Proxylist package keys.",
+    path: "genereateproxylist",
+    icon: <KeyOutlined />,
+  },
+  {
+    title: "Delete Proxy List",
+    description: "View Proxylist Format.",
+    path: "removeproxylist",
+    icon: <DeleteOutlined />,
+  },
+];

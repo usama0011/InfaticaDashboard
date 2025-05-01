@@ -1,5 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Card } from "antd";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
+import { Card, Button } from "antd";
+
 import {
   CloudOutlined,
   PlusSquareOutlined,
@@ -8,20 +16,19 @@ import {
   AppstoreOutlined,
   FilterOutlined,
   ClockCircleOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
   StopOutlined,
   BarChartOutlined,
   PieChartOutlined,
   DeploymentUnitOutlined,
   EyeOutlined,
   LineChartOutlined,
-  GlobalOutlined,
   KeyOutlined,
   DeleteOutlined,
-  HeatMapOutlined,
-} from "@ant-design/icons"; // Ant Design Icons imported
+} from "@ant-design/icons";
+import "./App.css";
+
 import OurMainLogo from "../src/assets/logo-black.svg";
+import Login from "./pages/Login";
 import TrafficUsage from "./pages/TrafficUsage";
 import CreatePackage from "./pages/CreatePackage";
 import UpdatePackage from "./pages/UpdatePackage";
@@ -36,9 +43,10 @@ import ProxyLists from "./pages/ProxyLists";
 import ViewProxyList from "./pages/ViewProxyList";
 import Statistics from "./pages/Statistics";
 import KeysList from "./pages/KeysList";
-import "./App.css";
 import GenereteProxyList from "./pages/GenereteProxyList";
 import DeleteProxyList from "./pages/DeleteProxyList";
+import Signup from "./pages/Signup";
+import RequireAuth from "./utils/RequireAuth";
 
 const cards = [
   {
@@ -119,12 +127,6 @@ const cards = [
     path: "/statistics",
     icon: <LineChartOutlined />,
   },
-  // {
-  //   title: "Online Stats",
-  //   description: "Country-wise online residential proxies.",
-  //   path: "/online-stats",
-  //   icon: <GlobalOutlined />,
-  // },
   {
     title: "Keys List",
     description: "List of all available package keys.",
@@ -137,70 +139,205 @@ const cards = [
     path: "/genereateproxylist",
     icon: <KeyOutlined />,
   },
-
   {
     title: "Delete Proxy List",
     description: "View Proxylist Format.",
     path: "/removeproxylist",
     icon: <DeleteOutlined />,
   },
-  // {
-  //   title: "Proxy Countries",
-  //   description: "List of Proxy Countries!.",
-  //   path: "/proxycountries",
-  //   icon: <HeatMapOutlined />,
-  // },
 ];
+
+const Dashboard = () => {
+  const location = useLocation();
+  const isLoginPage =
+    location.pathname === "/login" || location.pathname === "/signup";
+
+  return (
+    <div className="App">
+      {!isLoginPage && (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <img src={OurMainLogo} alt="" className="infoatdimage" />
+            <Button
+              type="primary"
+              danger
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "/login";
+              }}
+              style={{ marginRight: "20px" }}
+            >
+              Logout
+            </Button>
+          </div>
+          <h1 className="mainilkj">Infatica.io Dashboard</h1>
+          <div className="dashboard-grid">
+            {cards.map((card, index) => (
+              <Link to={card.path} key={index} className="dashboard-card-link">
+                <Card hoverable className="dashboard-card">
+                  <Card.Meta
+                    title={
+                      <span style={{ color: "#cb49b3" }}>
+                        {card.icon} <br /> {card.title}
+                      </span>
+                    }
+                    description={card.description}
+                  />
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} /> {/* ✅ added */}
+        {/* ✅ Protected Routes */}
+        <Route
+          path="/traffic-usage"
+          element={
+            <RequireAuth>
+              <TrafficUsage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/create-package"
+          element={
+            <RequireAuth>
+              <CreatePackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/update-package"
+          element={
+            <RequireAuth>
+              <UpdatePackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/get-package-info"
+          element={
+            <RequireAuth>
+              <GetPackageInfo />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/all-packages"
+          element={
+            <RequireAuth>
+              <GetAllPackages />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/filtered-packages"
+          element={
+            <RequireAuth>
+              <GetFilteredPackages />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/prolongate-package"
+          element={
+            <RequireAuth>
+              <ProlongatePackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/deactivate-package"
+          element={
+            <RequireAuth>
+              <DeactivatePackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/usage-all-packages"
+          element={
+            <RequireAuth>
+              <UsageAllPackages />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/usage-single-package"
+          element={
+            <RequireAuth>
+              <UsageSinglePackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/proxy-lists"
+          element={
+            <RequireAuth>
+              <ProxyLists />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/view-proxy-list"
+          element={
+            <RequireAuth>
+              <ViewProxyList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/statistics"
+          element={
+            <RequireAuth>
+              <Statistics />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/keys-list"
+          element={
+            <RequireAuth>
+              <KeysList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/genereateproxylist"
+          element={
+            <RequireAuth>
+              <GenereteProxyList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/removeproxylist"
+          element={
+            <RequireAuth>
+              <DeleteProxyList />
+            </RequireAuth>
+          }
+        />
+      </Routes>
+    </div>
+  );
+};
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <img src={OurMainLogo} alt="" className="infoatdimage" />
-        <h1 className="mainilkj">Infatica.io Dashobard</h1>
-        <div className="dashboard-grid">
-          {cards.map((card, index) => (
-            <Link to={card.path} key={index} className="dashboard-card-link">
-              <Card hoverable className="dashboard-card">
-                <Card.Meta
-                  title={
-                    <span style={{ color: "#cb49b3" }}>
-                      {card.icon} <br /> {card.title}
-                    </span>
-                  }
-                  description={card.description}
-                />
-              </Card>
-            </Link>
-          ))}
-        </div>
-        <br />
-        <Routes>
-          <Route path="/traffic-usage" element={<TrafficUsage />} />
-          <Route path="/create-package" element={<CreatePackage />} />
-          <Route path="/update-package" element={<UpdatePackage />} />
-          <Route path="/get-package-info" element={<GetPackageInfo />} />
-          <Route path="/all-packages" element={<GetAllPackages />} />
-          <Route path="/filtered-packages" element={<GetFilteredPackages />} />
-          <Route path="/prolongate-package" element={<ProlongatePackage />} />
-
-          <Route path="/deactivate-package" element={<DeactivatePackage />} />
-          <Route path="/usage-all-packages" element={<UsageAllPackages />} />
-          <Route
-            path="/usage-single-package"
-            element={<UsageSinglePackage />}
-          />
-          <Route path="/proxy-lists" element={<ProxyLists />} />
-          <Route path="/view-proxy-list" element={<ViewProxyList />} />
-          <Route path="/statistics" element={<Statistics />} />
-          {/* <Route path="/online-stats" element={<OnlineStats />} /> */}
-          <Route path="/keys-list" element={<KeysList />} />
-          <Route path="/genereateproxylist" element={<GenereteProxyList />} />
-
-          <Route path="/removeproxylist" element={<DeleteProxyList />} />
-          {/* <Route path="/proxycountries" element={<ProxyCountries />} /> */}
-        </Routes>
-      </div>
+      <Dashboard />
     </Router>
   );
 }
