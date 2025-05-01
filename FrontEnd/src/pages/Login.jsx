@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, message } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, UserOutlined, CodeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-black.svg";
-import API from "../api";
+import axios from "axios";
 import "../styles/Login.css";
 
 const { Title, Text } = Typography;
@@ -15,7 +15,7 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      const res = await API.post(
+      const res = await axios.post(
         "https://infatica-dashboard-backend.vercel.app/api/stats/auth/login",
         values
       );
@@ -84,6 +84,13 @@ const Login = () => {
           <a href="/signup">Sign up</a>
         </div>
       </Card>
+
+      <div className="login-footer">
+        <CodeOutlined style={{ marginRight: "8px", fontSize: "16px" }} />
+        <Text type="secondary">
+          Developed by <strong>Muix</strong>
+        </Text>
+      </div>
     </div>
   );
 };
