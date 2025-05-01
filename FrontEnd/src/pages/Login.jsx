@@ -16,7 +16,7 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "https://infatica-dashboard-backend.vercel.app/api/stats/auth/login",
+        "https://infatica-dashboard-backend.vercel.app/api/auth/login",
         values
       );
       localStorage.setItem("token", res.data.token);
