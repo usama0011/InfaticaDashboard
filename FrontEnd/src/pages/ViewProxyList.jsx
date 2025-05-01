@@ -136,24 +136,6 @@ const ViewProxyList = () => {
           No proxy data loaded.
         </p>
       )}
-
-      {loading ? (
-        <div style={{ textAlign: "center" }}>
-          <Spin size="large" />
-        </div>
-      ) : proxyData.length > 0 ? (
-        <Table
-          dataSource={proxyData}
-          columns={columns}
-          bordered
-          pagination={{ pageSize: 50 }}
-          scroll={{ x: true }}
-        />
-      ) : (
-        <p style={{ textAlign: "center", color: "#888" }}>
-          No proxy data loaded.
-        </p>
-      )}
     </div>
   );
 };
