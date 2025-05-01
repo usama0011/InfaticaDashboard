@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api";
-import { Table, Spin, message, Typography, Tag } from "antd";
+import {
+  Table,
+  Spin,
+  message,
+  Typography,
+  Tag,
+  Select,
+  Row,
+  Col,
+  Input,
+} from "antd";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const GetAllPackages = () => {
   const [loading, setLoading] = useState(false);
   const [packages, setPackages] = useState([]);
+  const [filteredPackages, setFilteredPackages] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [keySearch, setKeySearch] = useState("");
 
   const fetchAllPackages = async () => {
     try {
       setLoading(true);
       const response = await axios.get("/get-all-packages");
-      setPackages(response.data?.results || []);
+      const data = response.data?.results || [];
+      setPackages(data);
+      setFilteredPackages(data);
       message.success("Packages fetched successfully!");
     } catch (error) {
       console.error(error);
@@ -25,6 +41,22 @@ const GetAllPackages = () => {
   useEffect(() => {
     fetchAllPackages();
   }, []);
+
+  useEffect(() => {
+    let filtered = [...packages];
+
+    if (statusFilter !== "All") {
+      filtered = filtered.filter((pkg) => pkg.status === statusFilter);
+    }
+
+    if (keySearch.trim()) {
+      filtered = filtered.filter((pkg) =>
+        pkg.package_key.toLowerCase().includes(keySearch.toLowerCase())
+      );
+    }
+
+    setFilteredPackages(filtered);
+  }, [statusFilter, keySearch, packages]);
 
   const columns = [
     {
@@ -77,13 +109,36 @@ const GetAllPackages = () => {
         All Packages
       </Title>
 
+      <Row gutter={[16, 16]} style={{ marginBottom: "16px" }}>
+        <Col xs={24} sm={12}>
+          <Select
+            value={statusFilter}
+            onChange={(val) => setStatusFilter(val)}
+            style={{ width: "100%" }}
+          >
+            <Option value="All">All Status</Option>
+            <Option value="Active">Active</Option>
+            <Option value="Terminated">Terminated</Option>
+          </Select>
+        </Col>
+
+        <Col xs={24} sm={12}>
+          <Input
+            value={keySearch}
+            onChange={(e) => setKeySearch(e.target.value)}
+            placeholder="Paste or type Package Key to search"
+            allowClear
+          />
+        </Col>
+      </Row>
+
       {loading ? (
         <div style={{ textAlign: "center", paddingTop: "40px" }}>
           <Spin size="large" />
         </div>
-      ) : packages.length > 0 ? (
+      ) : filteredPackages.length > 0 ? (
         <Table
-          dataSource={packages}
+          dataSource={filteredPackages}
           columns={columns}
           rowKey="package_key"
           bordered
@@ -97,5 +152,3 @@ const GetAllPackages = () => {
 };
 
 export default GetAllPackages;
-
-///Status Filter Apply Here in Get All Pakages

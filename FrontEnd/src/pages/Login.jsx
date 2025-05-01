@@ -83,14 +83,13 @@ const Login = () => {
           <Text type="secondary">Don't have an account?</Text>{" "}
           <a href="/signup">Sign up</a>
         </div>
+        <div className="login-footer">
+          <CodeOutlined style={{ marginRight: "8px", fontSize: "16px" }} />
+          <Text type="secondary">
+            Developed by <strong>Muix</strong>
+          </Text>
+        </div>
       </Card>
-
-      <div className="login-footer">
-        <CodeOutlined style={{ marginRight: "8px", fontSize: "16px" }} />
-        <Text type="secondary">
-          Developed by <strong>Muix</strong>
-        </Text>
-      </div>
     </div>
   );
 };

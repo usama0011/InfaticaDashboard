@@ -163,6 +163,7 @@ const Dashboard = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              padding: "20px 80px",
             }}
           >
             <img src={OurMainLogo} alt="" className="infoatdimage" />
