@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import axios from "../api";
-import { Input, Button, Form, message, Spin, Typography, Table } from "antd";
+import {
+  Input,
+  Button,
+  Form,
+  message,
+  Spin,
+  Typography,
+  Table,
+  Modal,
+} from "antd";
+import { saveAs } from "file-saver";
 
 const { Title } = Typography;
 
@@ -10,6 +20,8 @@ const ViewProxyList = () => {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [proxyData, setProxyData] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [filename, setFilename] = useState("proxy_list");
 
   const handleSubmit = async () => {
     if (!packageKey || !id || !name) {
@@ -34,7 +46,7 @@ const ViewProxyList = () => {
           proxy: proxyStr,
           ip,
           port,
-          type: "HTTP", // default or static, update if needed
+          type: "HTTP",
         };
       });
 
@@ -46,6 +58,33 @@ const ViewProxyList = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadCSV = () => {
+    if (!proxyData.length) return;
+
+    const headers = ["IP", "Port", "Type", "Proxy String"];
+    const rows = proxyData.map((item) => [
+      item.ip,
+      item.port,
+      item.type,
+      item.proxy,
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((row) =>
+        row
+          .map((cell) =>
+            typeof cell === "string" && cell.includes(",") ? `"${cell}"` : cell
+          )
+          .join(",")
+      )
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, `${filename || "proxy_list"}.csv`);
+    setIsModalVisible(false);
+    message.success("CSV downloaded successfully!");
   };
 
   const columns = [
@@ -111,18 +150,29 @@ const ViewProxyList = () => {
           </Button>
         </div>
       </Form>
-      <br />
+
       {loading ? (
         <div style={{ textAlign: "center" }}>
           <Spin size="large" />
         </div>
       ) : proxyData.length > 0 ? (
         <>
-          <div style={{ marginBottom: "16px", textAlign: "center" }}>
+          <div
+            style={{
+              marginBottom: "16px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Title level={4} style={{ color: "#2e7d32" }}>
               Total Proxies: {proxyData.length}
             </Title>
+            <Button type="primary" onClick={() => setIsModalVisible(true)}>
+              Download CSV
+            </Button>
           </div>
+
           <Table
             dataSource={proxyData}
             columns={columns}
@@ -136,6 +186,21 @@ const ViewProxyList = () => {
           No proxy data loaded.
         </p>
       )}
+
+      <Modal
+        title="Download CSV"
+        open={isModalVisible}
+        onOk={downloadCSV}
+        onCancel={() => setIsModalVisible(false)}
+        okText="Download"
+        cancelText="Cancel"
+      >
+        <Input
+          placeholder="Enter file name"
+          value={filename}
+          onChange={(e) => setFilename(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 };

@@ -142,7 +142,7 @@ const GetAllPackages = () => {
           columns={columns}
           rowKey="package_key"
           bordered
-          pagination={{ pageSize: 8 }}
+          pagination={{ pageSize: 100 }}
         />
       ) : (
         <p style={{ textAlign: "center", color: "#888" }}>No packages found.</p>
