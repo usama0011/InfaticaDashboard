@@ -12,6 +12,7 @@ import {
   Select,
   Modal,
 } from "antd";
+import { saveAs } from "file-saver";
 
 const { Title } = Typography;
 
@@ -20,11 +21,16 @@ const GenereteProxyList = () => {
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [csvModalVisible, setCsvModalVisible] = useState(false);
+  const [csvFilename, setCsvFilename] = useState("proxy_list");
+  const [storedPackageKey, setStoredPackageKey] = useState("");
+  const [csvLoading, setCsvLoading] = useState(false);
 
   const handleGenerate = async (values) => {
     try {
       setLoading(true);
       const { packagekey, ...fields } = values;
+      setStoredPackageKey(packagekey); // ✅ Save package key
 
       // ✅ Convert to FormData
       const formData = new FormData();
@@ -54,6 +60,56 @@ const GenereteProxyList = () => {
       message.error("Failed to generate proxy list.");
     } finally {
       setLoading(false);
+    }
+  };
+  const handleDownloadCSV = async () => {
+    setCsvLoading(true); // ⏳ Start loading
+
+    const packageKey = storedPackageKey; // ✅ use stored value
+    const id = modalData?.results?.id;
+    const name = modalData?.results?.name;
+
+    if (!packageKey || !id || !name) {
+      return message.error("Missing required proxy list identifiers.");
+    }
+
+    try {
+      const response = await axios.post(`/view-proxy-list/${packageKey}`, {
+        id,
+        name,
+      });
+
+      const proxyList = response.data || [];
+
+      const parsedData = proxyList.map((proxyStr) => {
+        const [auth, hostPort] = proxyStr.split("@");
+        const [ip, port] = hostPort?.split(":") || [];
+        return [ip, port, "HTTP", proxyStr];
+      });
+
+      const headers = ["IP", "Port", "Type", "Proxy String"];
+      const csvContent = [headers, ...parsedData]
+        .map((row) =>
+          row
+            .map((cell) =>
+              typeof cell === "string" && cell.includes(",")
+                ? `"${cell}"`
+                : cell
+            )
+            .join(",")
+        )
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, `${csvFilename || "proxy_list"}.csv`);
+
+      setCsvModalVisible(false);
+      message.success("CSV downloaded successfully!");
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to fetch or download proxy list.");
+    } finally {
+      setCsvLoading(false); // ✅ Stop loading
     }
   };
 
@@ -205,14 +261,48 @@ const GenereteProxyList = () => {
       </Form>
       <Modal
         title="✅ Proxy List Generated"
-        visible={modalVisible}
+        open={modalVisible}
         onOk={() => setModalVisible(false)}
         onCancel={() => setModalVisible(false)}
         okText="Close"
+        footer={[
+          <Button
+            key="download"
+            onClick={() => {
+              console.log("Download button clicked");
+              setCsvModalVisible(true);
+            }}
+          >
+            Download CSV
+          </Button>,
+          <Button
+            key="close"
+            type="primary"
+            onClick={() => setModalVisible(false)}
+          >
+            Close
+          </Button>,
+        ]}
       >
         <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
           {JSON.stringify(modalData, null, 2)}
         </pre>
+      </Modal>
+      <Modal
+        title="Download Proxy List as CSV"
+        open={csvModalVisible}
+        onCancel={() => setCsvModalVisible(false)}
+        okText={csvLoading ? <Spin size="small" /> : "Download"}
+        okButtonProps={{ disabled: csvLoading }}
+        onOk={handleDownloadCSV}
+        cancelText="Cancel"
+      >
+        <Input
+          placeholder="Enter CSV file name"
+          value={csvFilename}
+          onChange={(e) => setCsvFilename(e.target.value)}
+          disabled={csvLoading}
+        />
       </Modal>
     </div>
   );
