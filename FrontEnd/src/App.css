@@ -28,6 +28,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* updated to 4 cards per row */
   gap: 30px;
+  padding: 50px 80px;
   margin: 0 auto;
 }
 

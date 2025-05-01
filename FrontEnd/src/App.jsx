@@ -5,6 +5,7 @@ import {
   Navigate,
   useLocation,
   Link,
+  useNavigate,
 } from "react-router-dom";
 import { Card, Button } from "antd";
 
@@ -148,6 +149,7 @@ const cards = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const isLoginPage =
     location.pathname === "/login" || location.pathname === "/signup";
@@ -170,7 +172,7 @@ const Dashboard = () => {
               onClick={() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-                window.location.href = "/login";
+                navigate("/login");
               }}
               style={{ marginRight: "20px" }}
             >
