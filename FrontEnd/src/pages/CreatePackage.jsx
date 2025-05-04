@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "../api";
-import { Input, Button, Form, message, Spin } from "antd";
+import { Input, Button, Form, message, Spin, Modal } from "antd";
 
 const CreatePackage = () => {
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [responseData, setResponseData] = useState(null);
 
   const [formData, setFormData] = useState({
     expired_at: "",
@@ -31,7 +33,8 @@ const CreatePackage = () => {
       setLoading(true);
       const response = await axios.post("/create-package", formData);
       message.success("Package created successfully!");
-      console.log(response.data);
+      setResponseData(response.data);
+      setModalVisible(true);
 
       // Clear form after success
       setFormData({
@@ -114,6 +117,25 @@ const CreatePackage = () => {
           </Button>
         </div>
       </Form>
+
+      {/* ✅ Modal showing API response */}
+      <Modal
+        open={modalVisible}
+        title="Package Created Successfully"
+        onCancel={() => setModalVisible(false)}
+        onOk={() => setModalVisible(false)}
+        width={700}
+      >
+        <pre
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: "15px",
+            borderRadius: "6px",
+          }}
+        >
+          {JSON.stringify(responseData, null, 2)}
+        </pre>
+      </Modal>
     </div>
   );
 };
