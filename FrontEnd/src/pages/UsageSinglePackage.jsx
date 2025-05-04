@@ -37,6 +37,11 @@ const UsageSinglePackage = () => {
       setLoading(false);
     }
   };
+  const bytesToMB = (bytes) => {
+    if (bytes === null || bytes === undefined || bytes === false) return "N/A";
+    const mb = bytes / 1048576;
+    return `${mb.toFixed(2)} MB`;
+  };
 
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto", paddingTop: "30px" }}>
@@ -73,18 +78,16 @@ const UsageSinglePackage = () => {
         <Card title={`Usage for Package: ${usageData.key}`} bordered>
           <Descriptions column={1}>
             <Descriptions.Item label="Daily">
-              {usageData.daily?.toLocaleString() || "0"}
+              {bytesToMB(usageData.daily)}
             </Descriptions.Item>
             <Descriptions.Item label="Weekly">
-              {usageData.weekly?.toLocaleString() || "0"}
+              {bytesToMB(usageData.weekly)}
             </Descriptions.Item>
             <Descriptions.Item label="Monthly">
-              {usageData.monhtly !== null
-                ? usageData.monhtly?.toLocaleString()
-                : "N/A"}
+              {bytesToMB(usageData.monhtly)}
             </Descriptions.Item>
             <Descriptions.Item label="Common">
-              {usageData.common?.toLocaleString() || "0"}
+              {bytesToMB(usageData.common)}
             </Descriptions.Item>
           </Descriptions>
         </Card>

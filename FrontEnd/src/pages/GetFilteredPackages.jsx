@@ -3,15 +3,28 @@ import axios from "../api";
 import { Input, Button, Table, Spin, message, Typography, Tag } from "antd";
 
 const { Title } = Typography;
+const { Search } = Input;
+import {
+  KeyOutlined,
+  CalendarOutlined,
+  ClockCircleOutlined,
+  TagOutlined,
+  PauseCircleOutlined,
+  CheckCircleOutlined,
+  BarsOutlined,
+  DownloadOutlined,
+  CloudOutlined,
+  LockOutlined,
+} from "@ant-design/icons";
 
 const GetFilteredPackages = () => {
   const [loading, setLoading] = useState(false);
   const [inputKeys, setInputKeys] = useState("");
   const [filteredPackages, setFilteredPackages] = useState([]);
+  const [loginFilter, setLoginFilter] = useState(""); // ✅ for login search
 
   const handleFetch = async () => {
     const trimmedKeys = inputKeys.trim();
-
     if (!trimmedKeys) {
       message.error("Please enter at least one package key.");
       return;
@@ -32,26 +45,66 @@ const GetFilteredPackages = () => {
     }
   };
 
+  // ✅ Filter logic based on login field in lists
+  const getFilteredByLogin = () => {
+    if (!loginFilter.trim()) return filteredPackages;
+
+    return filteredPackages.filter((pkg) =>
+      pkg.lists?.some((item) =>
+        item.login?.toLowerCase().includes(loginFilter.toLowerCase())
+      )
+    );
+  };
+  const bytesToMB = (bytes) => {
+    if (bytes === null || bytes === undefined || bytes === false) return "N/A";
+    const mb = bytes / 1048576;
+    return `${mb.toFixed(2)} MB`;
+  };
+  const highlightMatch = (text, query) => {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.replace(
+      regex,
+      '<span style="background-color: #d4edda; color: green; font-weight: 600;">$1</span>'
+    );
+  };
+
   const columns = [
     {
-      title: "Package Key",
+      title: (
+        <span>
+          <KeyOutlined /> Package Key
+        </span>
+      ),
       dataIndex: "package_key",
       key: "package_key",
     },
     {
-      title: "Created At",
+      title: (
+        <span>
+          <CalendarOutlined /> Created At
+        </span>
+      ),
       dataIndex: "created_at",
       key: "created_at",
       render: (val) => new Date(val).toLocaleString(),
     },
     {
-      title: "Expired At",
+      title: (
+        <span>
+          <ClockCircleOutlined /> Expired At
+        </span>
+      ),
       dataIndex: "expired_at",
       key: "expired_at",
       render: (val) => (val ? val : "Not Expired"),
     },
     {
-      title: "Status",
+      title: (
+        <span>
+          <TagOutlined /> Status
+        </span>
+      ),
       dataIndex: "status",
       key: "status",
       render: (val) => (
@@ -59,76 +112,105 @@ const GetFilteredPackages = () => {
       ),
     },
     {
-      title: "Suspended",
+      title: (
+        <span>
+          <PauseCircleOutlined /> Suspended
+        </span>
+      ),
       dataIndex: "is_suspended",
       key: "is_suspended",
       render: (val) => (val ? "Yes" : "No"),
     },
     {
-      title: "Active",
+      title: (
+        <span>
+          <CheckCircleOutlined /> Active
+        </span>
+      ),
       dataIndex: "is_active",
       key: "is_active",
       render: (val) => (val ? "Yes" : "No"),
     },
     {
-      title: "Proxy Count",
+      title: (
+        <span>
+          <BarsOutlined /> Proxy Count
+        </span>
+      ),
       dataIndex: "proxy_count",
       key: "proxy_count",
       render: (val) => val?.toLocaleString(),
     },
     {
-      title: "Traffic Limit - Daily",
-      dataIndex: ["traffic_limits", "daily"],
-      key: "limit_daily",
-      render: (val) => (val === false ? "Unlimited" : val),
-    },
-    {
-      title: "Traffic Limit - Weekly",
-      dataIndex: ["traffic_limits", "weekly"],
-      key: "limit_weekly",
-      render: (val) => (val === false ? "Unlimited" : val),
-    },
-    {
-      title: "Traffic Limit - Monthly",
-      dataIndex: ["traffic_limits", "monthly"],
-      key: "limit_monthly",
-      render: (val) => (val === false ? "Unlimited" : val),
-    },
-    {
-      title: "Traffic Limit - Common",
-      dataIndex: ["traffic_limits", "common"],
-      key: "limit_common",
-      render: (val) => (val === false ? "Unlimited" : val),
-    },
-    {
-      title: "Traffic Used - Daily",
+      title: (
+        <span>
+          <DownloadOutlined /> Traffic Used - Daily (MB)
+        </span>
+      ),
       dataIndex: ["traffic_usage", "daily"],
       key: "usage_daily",
-      render: (val) => val?.toLocaleString(),
+      render: (val) => bytesToMB(val),
     },
     {
-      title: "Traffic Used - Weekly",
+      title: (
+        <span>
+          <DownloadOutlined /> Traffic Used - Weekly (MB)
+        </span>
+      ),
       dataIndex: ["traffic_usage", "weekly"],
       key: "usage_weekly",
-      render: (val) => val?.toLocaleString(),
+      render: (val) => bytesToMB(val),
     },
     {
-      title: "Traffic Used - Monthly",
+      title: (
+        <span>
+          <DownloadOutlined /> Traffic Used - Monthly (MB)
+        </span>
+      ),
       dataIndex: ["traffic_usage", "monthly"],
       key: "usage_monthly",
-      render: (val) => val?.toLocaleString(),
+      render: (val) => bytesToMB(val),
     },
     {
-      title: "Traffic Used - Common",
+      title: (
+        <span>
+          <DownloadOutlined /> Traffic Used - Common (MB)
+        </span>
+      ),
       dataIndex: ["traffic_usage", "common"],
       key: "usage_common",
-      render: (val) => val?.toLocaleString(),
+      render: (val) => bytesToMB(val),
     },
     {
-      title: "Proxy Lists",
+      title: (
+        <span>
+          <LockOutlined /> Proxy Lists
+        </span>
+      ),
       dataIndex: "lists",
       key: "lists",
-      render: (lists) => (lists.length === 0 ? "None" : JSON.stringify(lists)),
+      render: (lists) => {
+        if (!lists || lists.length === 0) return "None";
+        return (
+          <div>
+            {lists.map((item, idx) => (
+              <div key={idx} style={{ marginBottom: 6 }}>
+                <div>
+                  <strong>Login:</strong>{" "}
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: highlightMatch(item.login || "", loginFilter),
+                    }}
+                  />
+                </div>
+                <div>
+                  <strong>Password:</strong> {item.password}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      },
     },
   ];
 
@@ -157,18 +239,30 @@ const GetFilteredPackages = () => {
         </Button>
       </div>
 
+      {filteredPackages.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <Search
+            placeholder="Filter by Proxy Login (e.g. zohaibSultan-cm)"
+            allowClear
+            enterButton="Search"
+            value={loginFilter}
+            onChange={(e) => setLoginFilter(e.target.value)}
+          />
+        </div>
+      )}
+
       {loading ? (
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <Spin size="large" />
         </div>
-      ) : filteredPackages.length > 0 ? (
+      ) : getFilteredByLogin().length > 0 ? (
         <Table
-          dataSource={filteredPackages}
+          dataSource={getFilteredByLogin()}
           columns={columns}
           rowKey="package_key"
           bordered
           scroll={{ x: "max-content" }}
-          pagination={{ pageSize: 6 }}
+          pagination={{ pageSize: 100 }}
         />
       ) : (
         <p style={{ textAlign: "center", color: "#888" }}>No packages found.</p>

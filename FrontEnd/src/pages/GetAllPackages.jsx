@@ -11,6 +11,15 @@ import {
   Col,
   Input,
 } from "antd";
+import {
+  KeyOutlined,
+  CalendarOutlined,
+  ClockCircleOutlined,
+  TagOutlined,
+  BarsOutlined,
+  DashboardOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -57,27 +66,63 @@ const GetAllPackages = () => {
 
     setFilteredPackages(filtered);
   }, [statusFilter, keySearch, packages]);
+  const bytesToMB = (bytes) => {
+    if (bytes === null || bytes === undefined || bytes === false) return "N/A";
+    const mb = bytes / 1048576;
+    return `${mb.toFixed(2)} MB`;
+  };
+  const highlightMatch = (text, query) => {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.replace(
+      regex,
+      `<span style="background-color: #d4edda; color: green; font-weight: bold;">$1</span>`
+    );
+  };
 
   const columns = [
     {
-      title: "Package Key",
+      title: (
+        <span>
+          <KeyOutlined /> Package Key
+        </span>
+      ),
       dataIndex: "package_key",
       key: "package_key",
+      render: (text) => (
+        <span
+          dangerouslySetInnerHTML={{
+            __html: highlightMatch(text, keySearch),
+          }}
+        />
+      ),
     },
     {
-      title: "Created At",
+      title: (
+        <span>
+          <CalendarOutlined /> Created At
+        </span>
+      ),
       dataIndex: "created_at",
       key: "created_at",
       render: (val) => new Date(val).toLocaleString(),
     },
     {
-      title: "Expired",
+      title: (
+        <span>
+          <ClockCircleOutlined /> Expired
+        </span>
+      ),
       dataIndex: "expired_at",
       key: "expired_at",
       render: (val) => (val ? new Date(val).toLocaleString() : "Not Expired"),
     },
     {
-      title: "Status",
+      title: (
+        <span>
+          <TagOutlined /> Status
+        </span>
+      ),
       dataIndex: "status",
       key: "status",
       render: (val) => (
@@ -85,21 +130,33 @@ const GetAllPackages = () => {
       ),
     },
     {
-      title: "Proxies",
+      title: (
+        <span>
+          <BarsOutlined /> Proxies
+        </span>
+      ),
       dataIndex: "proxy_count",
       key: "proxy_count",
     },
     {
-      title: "Common Limit",
+      title: (
+        <span>
+          <DashboardOutlined /> Common Limit
+        </span>
+      ),
       dataIndex: ["traffic_limits", "common"],
       key: "limit_traffic_common",
       render: (val) => (val === false ? "Unlimited" : val.toLocaleString()),
     },
     {
-      title: "Used Traffic",
+      title: (
+        <span>
+          <DownloadOutlined /> Used Traffic (MB)
+        </span>
+      ),
       dataIndex: ["traffic_usage", "common"],
       key: "traffic_used",
-      render: (val) => val?.toLocaleString() || "0",
+      render: (val) => bytesToMB(val),
     },
   ];
 
