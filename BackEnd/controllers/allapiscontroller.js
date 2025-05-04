@@ -40,7 +40,6 @@ export const getTrafficUsage = async (req, res) => {
   }
 };
 
-// Controller 2: Create New Package
 export const createPackage = async (req, res) => {
   try {
     const {
@@ -51,19 +50,25 @@ export const createPackage = async (req, res) => {
       limit_traffic_daily,
     } = req.body;
 
+    // ✅ Build FormData
+    const formData = new FormData();
+    if (expired_at) formData.append("expired_at", expired_at);
+    if (limit_traffic_common)
+      formData.append("limit_traffic_common", limit_traffic_common);
+    if (limit_traffic_monthly)
+      formData.append("limit_traffic_monthly", limit_traffic_monthly);
+    if (limit_traffic_weekly)
+      formData.append("limit_traffic_weekly", limit_traffic_weekly);
+    if (limit_traffic_daily)
+      formData.append("limit_traffic_daily", limit_traffic_daily);
+
     const response = await axios.post(
       "https://api.infatica.io/package",
-      {
-        expired_at,
-        limit_traffic_common,
-        limit_traffic_monthly,
-        limit_traffic_weekly,
-        limit_traffic_daily,
-      },
+      formData,
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
-          "Content-Type": "application/json",
+          ...formData.getHeaders(), // ✅ Required for multipart/form-data
         },
       }
     );
@@ -71,14 +76,12 @@ export const createPackage = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error creating package:", error.message);
-    console.log(error.message);
     res
       .status(500)
       .json({ message: "Failed to create package", error: error.message });
   }
 };
 
-// Controller 3: Update Package
 export const updatePackage = async (req, res) => {
   try {
     const { packageKey } = req.params;
@@ -95,18 +98,24 @@ export const updatePackage = async (req, res) => {
         .json({ message: "Package key is required in URL params." });
     }
 
+    // ✅ Prepare FormData
+    const formData = new FormData();
+    if (limit_traffic_common)
+      formData.append("limit_traffic_common", limit_traffic_common);
+    if (limit_traffic_monthly)
+      formData.append("limit_traffic_monthly", limit_traffic_monthly);
+    if (limit_traffic_weekly)
+      formData.append("limit_traffic_weekly", limit_traffic_weekly);
+    if (limit_traffic_daily)
+      formData.append("limit_traffic_daily", limit_traffic_daily);
+
     const response = await axios.post(
       `https://api.infatica.io/package/${packageKey}`,
-      {
-        limit_traffic_common,
-        limit_traffic_monthly,
-        limit_traffic_weekly,
-        limit_traffic_daily,
-      },
+      formData,
       {
         headers: {
           "api-key": "7cv9Bz2CZQvuWQL65OD6",
-          "Content-Type": "application/json",
+          ...formData.getHeaders(), // ✅ Required for multipart/form-data
         },
       }
     );
@@ -119,7 +128,6 @@ export const updatePackage = async (req, res) => {
       .json({ message: "Failed to update package", error: error.message });
   }
 };
-
 // Controller 4: Get Package Information
 export const getPackageInfo = async (req, res) => {
   try {
